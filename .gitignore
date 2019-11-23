@@ -1,0 +1,6 @@
+*.*
+!*.tex
+!*.cpp
+!.gitignore
+!README.md
+template.tex

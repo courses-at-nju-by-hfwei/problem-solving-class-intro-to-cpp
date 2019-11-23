@@ -1,0 +1,199 @@
+\documentclass{article}
+\usepackage{xcolor}
+\usepackage{listings}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+\title{operator overload}
+\author{Zhenyu Yan\\TA of Problem Solving I}
+\date{}
+
+\begin{document}
+\maketitle
+Pre-requisites: Cpp basic features.
+\section{What is operator overload}
+Operator overload allows you to use operators like + to call some functions you create.\\
+For example, in C++, you can type things like
+\begin{lstlisting}
+cin >> n;
+\end{lstlisting}
+\begin{lstlisting}
+cout << n;
+\end{lstlisting}
+Have you ever wondered, why can we use the shift operators to read/write data?\\
+That's because cin/cout uses operator overload.
+\newpage
+\section{Example Code}
+\begin{lstlisting}
+#include <iostream>
+
+using namespace std;
+
+struct Mystory {
+    int useless;
+    int operator+(int n) {
+        //After this declaration, you can write
+        //Mystory + int
+        //It'll be transformed into Mystory.operator+(n)
+        //(Replace Mystory and int here with instances.)
+        cout << "You call a + function\n";
+        return n;
+    }
+    int operator-(int n) {
+        cout << "You call a - function\n";
+        return n;
+    }
+    int operator*(int n) {
+        cout  << "You call a * function\n";
+        return n;
+    }
+};
+int main() {
+    Mystory mystory;
+    int k = mystory + 1;
+    cout << k << "\n";
+    k = mystory - 2;
+    cout << k << "\n";
+    k = mystory.operator-(2);
+    cout << k << "\n";
+    return 0;
+}
+\end{lstlisting}
+(Check out example.cpp)\\
+sample output
+\begin{lstlisting}
+You call a + function
+1
+You call a - function
+2
+You call a - function
+2
+\end{lstlisting}
+\newpage
+\section{a calculator struct}
+\begin{lstlisting}
+#include <iostream>
+
+using namespace std;
+
+struct Calculator {
+    int power;
+    int cnt;
+    int last;
+    int operator+(int n) {
+        if(power <= 0) {
+            cout << "Low on power!\n";
+            return 0;
+        } else {
+            --power;
+            ++cnt;
+            return last = (last + n);
+        }
+    }
+    int operator-(int n) {
+        if(power <= 0) {
+            cout << "Low on power!\n";
+            return 0;
+        } else {
+            --power;
+            ++cnt;
+            last = last - n;
+            return last;
+        }
+    }
+    void show_info() {
+        cout << "You have used this calculator to calculate " << cnt << "times\n";
+    }
+    void charge() {
+        power = 100;
+    }
+    void set_init(int n) {
+        last = n;
+    }
+};
+
+int main() {
+    Calculator cal;
+    cal.power = 0;
+    cal.last = 0;
+    cal.cnt = 0;
+    //In fact, it's bad to directly assign values to your struct/class, we'll cover this later
+    cal.show_info();
+    int k = cal + 2;
+    cout << k << "\n";
+    cal.charge();
+    k = cal + 2;
+    cout << k << "\n";
+    k = cal - 3;
+    cout << k << "\n";
+    cal.show_info();
+    return 0;
+}
+
+\end{lstlisting}
+(Check out calculator.cpp)\\
+\begin{lstlisting}
+You have used this calculator to calculate 0times
+Low on power!
+0
+2
+-1
+You have used this calculator to calculate 2times
+\end{lstlisting}
+\newpage
+\section{a 2-D point example}
+\begin{lstlisting}
+#include <iostream>
+
+using namespace std;
+
+struct Point {
+    int x,y;
+};
+
+istream& operator>>(istream& is, Point& p) {
+    //Point& here means that, you can change this Point in this function
+    //It's a reference type. Which'll be covered later.
+    is >> p.x >> p.y;
+    return is;
+}
+
+ostream& operator<<(ostream& os, Point& p) {
+    return os << "(" << p.x << ", " << p.y << ")\n";
+}
+
+int main() {
+    Point p;
+    cin >> p;
+    cout << p;
+    return 0;
+}
+\end{lstlisting}
+(Check out point.cpp)\\
+\begin{lstlisting}
+1 3
+\end{lstlisting}
+\begin{lstlisting}
+(1, 3)
+\end{lstlisting}
+\end{document}

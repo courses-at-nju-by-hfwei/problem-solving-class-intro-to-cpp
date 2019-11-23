@@ -1,0 +1,141 @@
+\documentclass{article}
+\usepackage{xcolor}
+\usepackage{listings}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+\title{Vector}
+\author{Zhenyu Yan\\TA of Problem Solving I}
+\date{}
+
+\begin{document}
+\maketitle
+Pre-requisites: Cpp basic features.
+\section{What is std::vector}
+std::vector(hereinafter called vector) can be regarded as a dynamic-size array.\\
+\section{What's the usage of vector}
+The most common usage of vector is array of unknown size.\\
+For example, in OJ1-3A food chain. We encountered the problem that, if a creature eats many other creatures, it'll be hard to record this.\\
+If you declare a \begin{lstlisting}
+int eat[10000][10000];\end{lstlisting}
+It'll be a greate cost of memory. This is where vector comes to play.\\
+It automatically controls the memory it uses. So\begin{lstlisting}
+vector<int> eat[10000];\end{lstlisting}
+will be a wonderful choice.
+\newpage
+\section{Usage of vector}
+\begin{lstlisting}
+#include <iostream>
+#include <vector>
+//In C++, things you wanna use will usually be in the header with same name!
+//introducing std::string by #include <string>
+//introducing std::queue by #include <queue>
+
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    vector<int> int_vector;
+    //vector<int> here means that you want a vector, that use to stroe int.
+    //vector<double> will give you a vector to store double
+    //So, what will vector<vector<int> > give you? You'll see it in OJ1-9!
+    //Try to figure it out before the OJ being published!
+    for(int i = 0; i < n; ++i) {
+        int_vector.push_back(i);
+        //What does the dot here means????
+        //In C++, struct and class are allow to have member functions
+        //which can be regarded as "function" asscotiated to that struct/class instantce.
+        //You can regard it as something similar to
+        //push_back(int_vector, i);
+        //or
+        //push_back(&int_vector, i);
+        //(Use pointer because the vector may be modified in that function)
+        //See next section for more examples
+    }
+    for(int i = 0; i < n; ++i) {
+        cout << int_vector[i] << "\n";
+        //Here, you can use int_vector like an array!
+        //It's so coooooooool, isn't it?
+        //But, if your index is out of bound, it booms right away.
+        //(Arrays allows a little out of bound most of times, that's why so many students in our class passed OJ with wrong code)
+    }
+    return 0;
+}
+
+\end{lstlisting}
+(Check out vector.cpp)\\
+sample input
+\begin{lstlisting}
+5
+\end{lstlisting}
+sample output
+\begin{lstlisting}
+0
+1
+2
+3
+4
+\end{lstlisting}
+\section{member function}
+\begin{lstlisting}
+#include <iostream>
+
+using namespace std;
+
+struct Counter {
+    int count;
+    void increase(void) {
+        ++count;
+        //increase the member count of its caller
+    }
+};
+
+Counter counter1, counter2;
+void show() {
+    cout << counter1.count << ", " << counter2.count << "\n";
+}
+
+int main() {
+    counter1.count = 0;
+    counter2.count = 0;
+    show();
+    counter1.increase();
+    //increase counter1's count, has nothing to do with counter2
+    show();
+    for(int i = 0; i < 10; ++i) {
+        counter2.increase();
+        //increase counter2's count, has nothing to do with counter1
+    }
+    show();
+    return 0;
+}
+\end{lstlisting}
+(Check out member\_function.cpp)\\
+output
+\begin{lstlisting}
+0, 0
+1, 0
+1, 10
+\end{lstlisting}
+\end{document}

@@ -1,0 +1,103 @@
+\documentclass{article}
+\usepackage{xcolor}
+\usepackage{listings}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+\title{Exmplanation of some C++ feature grammers}
+\author{Zhenyu Yan\\TA of Problem Solving I}
+\date{}
+
+\begin{document}
+\maketitle
+Pre-requisites: None.
+\section{std::cin and std::cout}
+\begin{lstlisting}[language = C++]
+    #include <iostream>
+    //This is a header for C++. Which means IO(input/output) stream
+    // It includes cin, cout, cerr, clog, and many other things.
+    // What we care most here is just cin and cout
+
+    #include <stdio.h>
+    // It's legal to include any C header in C++!
+    //Some time, people consider using "c***" instead of "***.h"
+    //For example, #include <stdio.h> can be replaced by #include <cstdio>
+    //#include <math.h> can be replaced by #include <cmath>
+    //#include <ctype.h> can be replaced by #include <cctype>
+    //Notice that string.h is the same(Not actually) as cstring, but not string!
+    //#include <string> will allow you to use a thing called std::string.
+    //Which will be covered in further OJ.(maybe in two weeks or three)
+
+    int main() {
+        int n;
+        char s[100];
+        std::cin >> n;
+        //std::cin is a tool for C++ to read input. It's quite simple to use it,
+        //(But it's sometimes much too slower)
+        //you just std::cin >> what_you_want_to_read;
+        //What's coolest is that you don't need to care about the type
+        //std::cin uses some things called
+        //operator overload and function overload to implements it.
+        //Which will also be cover latter.
+        std::cin >> s;
+        //Input a string is similar
+        std::cout << "The number you input is ";
+        //std::cout uses the same technique
+        std::cout << n;
+        std::cout << "\n";
+        std::cout << "The string you input is " << s << "\n";
+        //std::cout also allows you to output in this way
+        //you can think that
+        //(std::cout << "The string you input is ")
+        //is still cout, so you can continue on << s
+    }
+\end{lstlisting}
+(Check out cin\_cout.cpp)\\
+sample input
+\begin{lstlisting}
+100
+Hello
+\end{lstlisting}
+output
+\begin{lstlisting}
+The number you input is 100
+The string you input is Hello
+\end{lstlisting}
+\section{namespace}
+You may see a lot of things like std:: above. What does it mean?\\
+It's a namespace. A simple way to understand is that, C++ provides a lot of tools. But if they come to play once you include them, things may be awful somethings. Because you may mistakely call something the library provides.\\
+So there is something called namespace. So that you can use the name cin, cout for some other useges.\\
+Well, to make the code beautiful, there is also some ways to make ugly std::cin into beautiful cin\\
+That is
+\begin{lstlisting}
+    using std::cin;
+\end{lstlisting}
+Which allows you to use cin as a shorthand for std::cin\\
+Sometimes, you can also use
+\begin{lstlisting}
+    using namespace std;
+\end{lstlisting}
+Which allows you to use all things without std:: !\\
+(Check out namespace\_1.cpp and namespace\_2.cpp)
+\newpage
+\end{document}
