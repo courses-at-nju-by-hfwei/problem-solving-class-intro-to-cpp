@@ -12,7 +12,7 @@ See each tex files' first fews lines.
 #### OOP
 - struct/class(TBD)
 - constructor(TBD)
-- destrructor(TBD)
+- destructor(TBD)
 - inhirence/virtual function(TBD)
 #### STL
 - vector
