@@ -97,45 +97,4 @@ sample output
 3
 4
 \end{lstlisting}
-\section{member function}
-\begin{lstlisting}
-#include <iostream>
-
-using namespace std;
-
-struct Counter {
-    int count;
-    void increase(void) {
-        ++count;
-        //increase the member count of its caller
-    }
-};
-
-Counter counter1, counter2;
-void show() {
-    cout << counter1.count << ", " << counter2.count << "\n";
-}
-
-int main() {
-    counter1.count = 0;
-    counter2.count = 0;
-    show();
-    counter1.increase();
-    //increase counter1's count, has nothing to do with counter2
-    show();
-    for(int i = 0; i < 10; ++i) {
-        counter2.increase();
-        //increase counter2's count, has nothing to do with counter1
-    }
-    show();
-    return 0;
-}
-\end{lstlisting}
-(Check out member\_function.cpp)\\
-output
-\begin{lstlisting}
-0, 0
-1, 0
-1, 10
-\end{lstlisting}
 \end{document}

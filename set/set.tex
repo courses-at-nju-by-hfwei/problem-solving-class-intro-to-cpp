@@ -1,0 +1,80 @@
+\documentclass{article}
+\usepackage{xcolor}
+\usepackage{listings}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+\title{Set}
+\author{Zhenyu Yan\\TA of Problem Solving I}
+\date{}
+
+\begin{document}
+\maketitle
+Pre-requisites: Cpp basic features.
+\section{What is std::set}
+std::set(hereinafter called set) can be regarded as a binary-search tree that allows you insert/query/delete elements quickly.\\
+\section{What's the usage of set}
+As its name suggests, the most common usage of set is to use it like the term set in mathematics.\\
+\newpage
+\section{Usage of set}
+\begin{lstlisting}
+#include <iostream>
+#include <set>
+
+using namespace std;
+
+int main() {
+    set<int> int_set;
+    cout << int_set.count(0) << "\n";
+    // If the element exists, count returns 1.
+    // Otherwise, it returns 0.
+    // Why its name is count?
+    // Because there is a class named multiset
+    // According to the term in mathematics.
+    // Which allows you to insert multiple identical elements into a multiset.
+    // Here returns 0 because there is nothing in the set.
+    for(int i = 0; i < 10; ++i) {
+        int_set.insert(i);
+    }
+    cout << int_set.count(0) << "\n";
+    // Now it returns 1.
+    int_set.insert(1);
+    cout << int_set.count(1) << "\n";
+    // Since a set do not contain repeated elements,
+    // count here still returns 1
+    int_set.erase(0);
+    // Remove element(s) from the set
+    cout << int_set.count(0) << "\n";
+    // Now 0 \notin our set, count here returns 0.
+    return 0;
+}
+\end{lstlisting}
+(Check out set.cpp)\\
+desired output
+\begin{lstlisting}
+0
+1
+1
+0
+\end{lstlisting}
+\end{document}

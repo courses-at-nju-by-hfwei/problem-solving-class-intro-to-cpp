@@ -1,0 +1,136 @@
+\documentclass{article}
+\usepackage{xcolor}
+\usepackage{listings}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+\title{member function}
+\author{Zhenyu Yan\\TA of Problem Solving I}
+\date{}
+
+\begin{document}
+\maketitle
+Pre-requisites: None.
+\section{What is member function}
+As its name suggests, it's something similar to member variable.\\
+In C++, member function is a feature that struct/class can have members that are functions.\\
+Notice that all instances of the same struct/class share the same functions.(In other words, member functions are similar to static variables)\\
+As we know, in C, if we want to edit the value of some struct(or int), we need to call functions with pointers to the struct/class we want to edit.\\
+But member function makes it easy.(See codes below.)
+\newpage
+\section{First peek of member function}
+\begin{lstlisting}
+#include <iostream>
+
+using namespace std;
+
+struct Counter {
+    int count;
+    void increase(void) {
+        ++count;
+        //increase the member count of its caller
+    }
+};
+
+Counter counter1, counter2;
+void show() {
+    cout << counter1.count << ", " << counter2.count << "\n";
+}
+
+int main() {
+    counter1.count = 0;
+    counter2.count = 0;
+    show();
+    counter1.increase();
+    //increase counter1's count, has nothing to do with counter2
+    show();
+    for(int i = 0; i < 10; ++i) {
+        counter2.increase();
+        //increase counter2's count, has nothing to do with counter1
+    }
+    show();
+    return 0;
+}
+\end{lstlisting}
+(Check out member\_function.cpp)\\
+output
+\begin{lstlisting}
+0, 0
+1, 0
+1, 10
+\end{lstlisting}
+\newpage
+\section{compare with C}
+\begin{lstlisting}
+#include <iostream>
+
+using namespace std;
+
+struct int_container {
+    int num;
+    void incre() {
+        ++num;
+    }
+};
+
+void add(int_container cont) {
+    ++cont.num;
+}
+// This add will not work
+
+void add(int_container* cont) {
+    ++(cont->num);
+}
+// In C++, we can define functions with the same name!
+// Compiler will distinguish them by their parameters.
+
+int main() {
+    int_container cont1;
+    cont1.num = 0;
+    cout << cont1.num << "\n";
+    // Output 0
+    add(cont1);
+    cout << cont1.num << "\n";
+    // output 0
+    // add increase the member of the parameter, but not the argument
+    cont1.incre();
+    cout << cont1.num << "\n";
+    // output 1
+    // member function can easily modify its members
+    add(&cont1);
+    cout << cont1.num << "\n";
+    // output 2
+    // we can also use pointer, but it's a little ugly.
+    // You'll see something coooool in introduction to reference.
+    return 0;
+}
+\end{lstlisting}
+(Check out compare.cpp)\\
+output
+\begin{lstlisting}
+0
+0
+1
+2
+\end{lstlisting}
+\end{document}

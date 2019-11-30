@@ -5,6 +5,7 @@ See each tex files' first fews lines.
 #### Cpp features
 - Cpp basic features
     + about cin/cout, namespace
+- member function
 - operator overload
 - function overload(TBD)
 - reference(TBD)
@@ -16,5 +17,5 @@ See each tex files' first fews lines.
 #### STL
 - vector
 - string(TBD)
-- set(TBD)
+- set
 - map(TBD)
