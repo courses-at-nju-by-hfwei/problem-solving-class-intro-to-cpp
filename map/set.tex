@@ -1,0 +1,127 @@
+\documentclass{article}
+\usepackage{xcolor}
+\usepackage{listings}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+\title{Map}
+\author{Zhenyu Yan\\TA of Problem Solving I}
+\date{}
+
+\begin{document}
+\maketitle
+Pre-requisites: Cpp basic features.
+\section{What is std::set}
+std::map(hereinafter called map) can be regarded as a mapping from variables of one type to another type.\\
+You can also treat it as an "array"(Though it's actually much slower than arrays and vectors)
+\section{What's the usage of map}
+As I said, we can treat map as a mapping. So we can use it to maintain a kind of relationship.\\
+e.g., if we would like to have a mapping from students to their scores, we can write(Where Student and Score are two classes we define)\\
+\begin{lstlisting}
+map<Student, Score>score_list;
+\end{lstlisting}
+Wait, why we write two types between angle brackets?\\
+As I said, we would like to have a mapping from one type to another. It's much cooler than a mapping that just map an int into another int, a double into another double. Right?\\
+As I said, we can also treat map as an array.
+ e.g., if we would like to store information of students. It's impossible that we declare an array like
+\begin{lstlisting}
+Student[191999999]students;
+\end{lstlisting}
+Becausee this is a huge waste of memory!\\
+But we can write
+\begin{lstlisting}
+map<int, Student>
+\end{lstlisting}
+(Detailed explanation will be attached below)
+\newpage
+\section{Usage of map}
+\begin{lstlisting}
+//points.cpp
+#include <iostream>
+#include <map>
+
+using namespace std;
+struct Point {
+    int x, y;
+};
+
+int main() {
+    map<int, Point> points;
+    for(int i = 0; i < 10; ++i) {
+        Point p;
+        p.x = i;
+        p.y = 10 - i;
+        points[i] = p;
+    }
+    for(int i = 0; i < 10; ++i) {
+        cout << points[i].x << ',' << points[i].y << "\n";
+    }
+    return 0;
+}
+\end{lstlisting}
+desired output
+\begin{lstlisting}
+0,10
+1,9
+2,8
+3,7
+4,6
+5,5
+6,4
+7,3
+8,2
+9,1
+\end{lstlisting}
+\newpage
+\begin{lstlisting}
+//fake_array.cpp
+#include <iostream>
+#include <map>
+
+using namespace std;
+
+int main() {
+    map<int, int> fake_array;
+    fake_array[-1] = -999;
+    fake_array[1] = 999;
+    fake_array[10000] = 1;
+    fake_array[20000] = 4;
+    fake_array[10000000] = 9;
+    int i;
+    while(cin >> i) {
+        if(fake_array.count(i)) {
+            cout << fake_array[i] << '\n';
+        } else {
+            cout << "No such element in this \"array\"\n";
+        }
+    }
+    return 0;
+}
+\end{lstlisting}
+You can input any number. If you number is some indexes we have assigned, the element will be printed.\\
+So, as you can see
+\begin{lstlisting}
+map<int, another_type>
+\end{lstlisting}
+is just like a huge "array", which saves a lot of memory for storaing discrete indexes.
+\end{document}
