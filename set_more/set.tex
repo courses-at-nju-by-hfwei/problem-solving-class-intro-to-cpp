@@ -1,0 +1,274 @@
+\documentclass{article}
+\usepackage{xcolor}
+\usepackage{listings}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+\title{Set}
+\author{Zhenyu Yan\\TA of Problem Solving I}
+\date{}
+
+\begin{document}
+\maketitle
+Pre-requisites: Cpp basic features, member function, operator overload.
+\section{A naive try}
+Since we know that std::set(hereinafter called set) can be used to storage ints, doubles or variables of other primitive types.\\
+Have you ever wanted to use it use store other data types? For example, some 2-D points?
+Here is a naive try.
+\begin{lstlisting}
+//naive.cpp
+#include <set>
+#include <cstdio>
+
+using namespace std;
+
+struct Point {
+    int x, y;
+};
+
+int main() {
+    set<Point> sp;
+    Point tmp = {1, 1};
+    sp.insert(tmp);
+    Point tmp2;
+    tmp2 = {0, 1};
+    printf("%d\n", sp.count(tmp2));
+    tmp2 = {0, 2};
+    printf("%d\n", sp.count(tmp2));
+    tmp2 = {1, 1};
+    printf("%d\n", sp.count(tmp2));
+    return 0;
+}
+\end{lstlisting}
+If you try to compile this code, you're get compiling error, and you'll be overwhelmed by a huge error log from your compiler. Don't panic, you're not supposed to understand what the log means.
+\newpage
+\section{more into std::set}
+The definition of set is
+\begin{lstlisting}
+template<
+    class Key,
+    class Compare = std::less<Key>,
+    class Allocator = std::allocator<Key>
+> class set; 
+\end{lstlisting}
+You don't need to be able to understand what this as well.\\
+Though we can't understand this piece of code, at least, we can make some guesses From the definition.\\
+A set contains a Key, which is the type we typed between $<>$. And It has something called Compare and something called Allocator.\\
+We know that vector can store as many elements as your memory allows, and this is supported by its dynamic memory management. Things are similar to set. Set use some method to manage memory it takes, and we don't need to care about it here.\\
+So, what does Compare here means?\\
+As we know, set uses some method similar to BST to make insertion and search fast. In BST, how we determine where to insert or where to search is by \textbf{comparing} two elements!\\
+Consider carefully, if we can compare two elements of some type X, will us be able to form a BST of type X?\\
+Of course \textbf{YES}!\\
+So, the Compare here is something that used to compare elements in that set.\\
+So, back to our naive try, what makes us failed is that we can't compare two points!
+\newpage
+\section{second try}
+So, what if we add a member function into the struct point?
+\begin{lstlisting}
+//try2.cpp
+#include <set>
+#include <cstdio>
+
+using namespace std;
+
+struct Point {
+    int x, y;
+    bool operator<(const Point &other) const {
+        return x + y < other.x + other.y;
+    }
+};
+
+int main() {
+    set<Point> sp;
+    Point tmp = {1, 1};
+    sp.insert(tmp);
+    Point tmp2;
+    tmp2 = {0, 1};
+    printf("%d\n", sp.count(tmp2));
+    tmp2 = {0, 2};
+    printf("%d\n", sp.count(tmp2));
+    tmp2 = {1, 1};
+    printf("%d\n", sp.count(tmp2));
+    return 0;
+}
+\end{lstlisting}
+desired output
+\begin{lstlisting}
+0
+1
+1
+\end{lstlisting}
+The code can be compiled here! Isn't it \textbf{cooooooool}?\\
+Wait, let's look at the output carefully, it seems the program consider\\
+point\{1, 1\} the same as point\{0,2\}.\\
+Why?\\
+Because we only have $<$, so set will consider two elements equal if $a<b$ and $b<a$ are both \textbf{false}\\
+Fine, do you remember \textbf{Lexicographic order}? If we modify the $<$ into lexicographic order, will things be fine?
+\newpage
+\section{Lexicographic order}
+\begin{lstlisting}
+//lexic.cpp
+#include <set>
+#include <cstdio>
+
+using namespace std;
+
+struct Point {
+    int x, y;
+    bool operator<(const Point &other) const {
+        if(x == other.x) {
+            return other.y < y;
+        } else {
+            return x < other.x;
+        }
+    }
+};
+
+int main() {
+    set<Point> sp;
+    Point tmp = {1, 1};
+    sp.insert(tmp);
+    Point tmp2;
+    tmp2 = {0, 1};
+    printf("%d\n", sp.count(tmp2));
+    tmp2 = {0, 2};
+    printf("%d\n", sp.count(tmp2));
+    tmp2 = {1, 1};
+    printf("%d\n", sp.count(tmp2));
+    return 0;
+}
+\end{lstlisting}
+desired output
+\begin{lstlisting}
+0
+0
+1
+\end{lstlisting}
+This time, the output is correct! Because we define a \textbf{total order} over all 2-D points. This solution is simple. But sometimes, we may not be able to define such a total order(especially when the set is constructed under some partial order).\\
+What can we do? 
+\newpage
+\section{introducing =}
+\begin{lstlisting}
+//equal.cpp
+#include <set>
+#include <cstdio>
+
+using namespace std;
+
+struct Point {
+    int x, y;
+    bool operator<(const Point &other) const {
+        return x + y < other.x + other.y;
+    }
+    bool operator=(const Point &other) const {
+        return x == other.x
+            && y == other.y;
+    }
+};
+
+int main() {
+    set<Point> sp;
+    Point tmp = {1, 1};
+    sp.insert(tmp);
+    Point tmp2;
+    tmp2 = {0, 1};
+    printf("%d\n", sp.count(tmp2));
+    tmp2 = {0, 2};
+    printf("%d\n", sp.count(tmp2));
+    tmp2 = {1, 1};
+    printf("%d\n", sp.count(tmp2));
+    return 0;
+}
+
+
+\end{lstlisting}
+desired output
+\begin{lstlisting}
+0
+0
+1
+\end{lstlisting}
+This time, we add another member function operator$=$.\\
+If a struct has both operator$<$ and oeprator$=$, std::less will compare them by $<$, and check whether they are equal by $=$. This is what we want!\\
+For partial order sets, if $p$ and $q$ can not be compared, we can write our $<$ carefully, so that $p.operator<(q)$ is false, $q.operator<(p)$ is false, $p.operator=(q)$ is also false!
+\newpage
+\section{std::pair}
+Well, since \textbf{pair} is something common in programming, C++ has done something for you!\\
+Since what we have for a point here is just two ints inside. we can replace it with
+\begin{lstlisting}
+pair<int, int>
+\end{lstlisting}
+\begin{lstlisting}
+//pair.cpp
+#include <set>
+#include <cstdio>
+
+using namespace std;
+
+
+int main() {
+    set<pair<int, int> > sp;
+    pair<int, int> tmp = {1, 1};
+    sp.insert(tmp);
+    pair<int, int> tmp2;
+    tmp2 = {0, 1};
+    printf("%d\n", sp.count(tmp2));
+    tmp2 = {0, 2};
+    printf("%d\n", sp.count(tmp2));
+    tmp2 = {1, 1};
+    printf("%d\n", sp.count(tmp2));
+    return 0;
+}
+\end{lstlisting}
+desired output
+\begin{lstlisting}
+0
+0
+1
+\end{lstlisting}
+It fact, we can use the black magic of \textbf{typedef}, see the code in next page.
+\newpage
+\begin{lstlisting}
+//typedef.cpp
+#include <set>
+#include <cstdio>
+
+using namespace std;
+
+typedef pair<int, int> Point;
+
+int main() {
+    set<Point> sp;
+    Point tmp = {1, 1};
+    sp.insert(tmp);
+    Point tmp2;
+    tmp2 = {0, 1};
+    printf("%d\n", sp.count(tmp2));
+    tmp2 = {0, 2};
+    printf("%d\n", sp.count(tmp2));
+    tmp2 = {1, 1};
+    printf("%d\n", sp.count(tmp2));
+    return 0;
+}
+\end{lstlisting}
+\end{document}
