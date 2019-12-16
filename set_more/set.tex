@@ -112,6 +112,8 @@ int main() {
     return 0;
 }
 \end{lstlisting}
+(The two '\&' at line 9 means reference. You can simply ignore it here.)\\
+(The second \textbf{const} at line 9 means this function do not modify \textbf{this}, because some compilers is strict and will consider it as an error otherwise)\\
 desired output
 \begin{lstlisting}
 0
@@ -164,53 +166,27 @@ desired output
 0
 1
 \end{lstlisting}
-This time, the output is correct! Because we define a \textbf{total order} over all 2-D points. This solution is simple. But sometimes, we may not be able to define such a total order(especially when the set is constructed under some partial order).\\
-What can we do? 
+This time, the output is correct! Because we define a \textbf{total order} over all 2-D points. This solution is simple.\\
+But sometimes, we may not be able to define such a total order(especially when the set is constructed under some partial order).\\
+What can we do?\\
+Well, I don't have a solution to general case. What I suggest is \textbf{try} to make a total order, or do not use std::set\\
+You can define several functions: f1, f2, f3, and write operator$<$ like(code at next page)
 \newpage
-\section{introducing =}
 \begin{lstlisting}
-//equal.cpp
-#include <set>
-#include <cstdio>
-
-using namespace std;
-
-struct Point {
-    int x, y;
-    bool operator<(const Point &other) const {
-        return x + y < other.x + other.y;
+bool operator<(const something& one, const something& other) {
+    int r1 = f1(one, other);
+    if(r1 == 0) {
+        int r2 = f2(one, other);
+        if(r2 == 0) {
+            return f3(one, other);
+        } else {
+            return r2;
+        }
+    } else {
+        return r1;
     }
-    bool operator=(const Point &other) const {
-        return x == other.x
-            && y == other.y;
-    }
-};
-
-int main() {
-    set<Point> sp;
-    Point tmp = {1, 1};
-    sp.insert(tmp);
-    Point tmp2;
-    tmp2 = {0, 1};
-    printf("%d\n", sp.count(tmp2));
-    tmp2 = {0, 2};
-    printf("%d\n", sp.count(tmp2));
-    tmp2 = {1, 1};
-    printf("%d\n", sp.count(tmp2));
-    return 0;
 }
-
-
 \end{lstlisting}
-desired output
-\begin{lstlisting}
-0
-0
-1
-\end{lstlisting}
-This time, we add another member function operator$=$.\\
-If a struct has both operator$<$ and oeprator$=$, std::less will compare them by $<$, and check whether they are equal by $=$. This is what we want!\\
-For partial order sets, if $p$ and $q$ can not be compared, we can write our $<$ carefully, so that $p.operator<(q)$ is false, $q.operator<(p)$ is false, $p.operator=(q)$ is also false!
 \newpage
 \section{std::pair}
 Well, since \textbf{pair} is something common in programming, C++ has done something for you!\\
